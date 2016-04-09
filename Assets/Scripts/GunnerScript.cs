@@ -50,7 +50,7 @@ public class GunnerScript : MonoBehaviour {
     public void AssignGun(Gun g) {
         shootyStick = Instantiate(g);
         shootyStick.transform.SetParent(cam);
-        Vector3 gunOffset = Vector3.down/2+Vector3.right/4;
+        Vector3 gunOffset = Vector3.down * 0.3f +Vector3.right * .25f;
         shootyStick.transform.localPosition=(gunOffset);
 
     }

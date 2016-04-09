@@ -28,7 +28,7 @@ public class DriverScript : MonoBehaviour {
 
         if (Input.GetButton("Boost")) {
             nitrous -= Time.deltaTime* nitrousUse;
-            rb.AddForce(transform.forward*boostSpeed);
+            rb.AddForce(transform.forward*boostSpeed, ForceMode.Acceleration);
         }
 	}
 
