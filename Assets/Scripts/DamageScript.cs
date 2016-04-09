@@ -32,7 +32,17 @@ public class DamageScript : MonoBehaviour {
 	void Die() {
         Instantiate(Explosion, transform.position, Quaternion.identity);
         if (deathCry != null)
+        {
             AudioSource.PlayClipAtPoint(deathCry, transform.position);
+            /*AudioSource deathKnell = gameObject.AddComponent<AudioSource>();
+            deathKnell.clip = deathCry;
+            deathKnell.pitch = Random.Range(2,7);
+            deathKnell.volume = 50;
+            deathKnell.Play();
+            Destroy(deathKnell);
+            print("MEMES");*/
+        }
+
         Destroy (this.gameObject);
 	}
 
