@@ -4,7 +4,7 @@ using System.Collections;
 public class Pistol : Gun{
 
 
-    public new void Start()
+    public override void Start()
     {
         clipSize = 2;
         damage = 5;

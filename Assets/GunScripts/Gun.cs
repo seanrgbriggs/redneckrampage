@@ -16,7 +16,7 @@ public abstract class Gun : MonoBehaviour {
 
     public float spreadAngle;
 
-    public void Start(){
+    public virtual void Start(){
         gunner = GameObject.FindGameObjectWithTag("Gunner");
         ammo = clipSize;
         curDelay = 0;
@@ -45,14 +45,10 @@ public abstract class Gun : MonoBehaviour {
         {
             GameObject target = info.transform.gameObject;
 
-            print(target.name+Random.seed);
-            //Instantiate(GameObject.CreatePrimitive(PrimitiveType.Capsule), info.point, Quaternion.identity);
-
             if (target.GetComponent<DamageScript>()==null)
                 return;
-            float rangemult = 1 - Mathf.Pow(((info.distance) / range),2);
             if (target.CompareTag("Enemy"))
-                target.GetComponent<DamageScript>().damage(damage * rangemult);
+                target.GetComponent<DamageScript>().damage(damage);
 
         }
 
