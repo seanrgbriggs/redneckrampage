@@ -17,8 +17,8 @@ public class GunnerScript : MonoBehaviour {
     public float speed = 0.05f;
     public float sensitivity =  500000f;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         truck = transform.parent;
         transform.localPosition = offset;
         cam = GetComponentInChildren<Camera>().transform;

@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using EZObjectPools;
+using EZEffects;
 
 public abstract class Gun : MonoBehaviour {
 
@@ -15,14 +17,17 @@ public abstract class Gun : MonoBehaviour {
     public float range;
 
     public float spreadAngle;
+    
+    public EffectImpact ImpactEffect;
+    public EffectMuzzleFlash MuzzleEffect;
+    public EffectTracer TracerEffect;
 
-    AudioSource[] sounds;
+    public AudioClip[] sounds;
 
     public virtual void Start(){
         gunner = GameObject.FindGameObjectWithTag("Gunner");
         ammo = clipSize;
         curDelay = 0;
-        sounds = GetComponents<AudioSource>();
     }
 
     public void Update() {
@@ -38,22 +43,32 @@ public abstract class Gun : MonoBehaviour {
             return;
         ammo--;
         curDelay = delay;
-        if (sounds[0] != null) sounds[0].Play();
+        if (sounds.Length > 0) AudioSource.PlayClipAtPoint(sounds[0], transform.position);
     }
 
     protected void SingleShot(Ray direction)
     {
-        direction.direction = Quaternion.Euler(Random.Range(-spreadAngle, spreadAngle), Random.Range(-spreadAngle, spreadAngle), 0) * gunner.GetComponent<GunnerScript>().cam.forward;
+        Transform cam = gunner.GetComponentInChildren<Camera>().transform.FindChild("GunBarrell");
+        direction.direction = Quaternion.Euler(Random.Range(-spreadAngle, spreadAngle), Random.Range(-spreadAngle, spreadAngle), 0) * cam.forward;
         RaycastHit info = new RaycastHit();
-        if (Physics.Raycast(direction, out info, range))
-        {
+        MuzzleEffect.ShowMuzzleEffect(cam, true, null);
+        if (Physics.Raycast(direction, out info, range)) {
             GameObject target = info.transform.gameObject;
 
-            if (target.GetComponent<DamageScript>()==null)
+            TracerEffect.ShowTracerEffect(cam.position + direction.direction, direction.direction, info.distance);
+
+            ImpactEffect.ShowImpactEffect(info.point, info.normal);
+
+            if (target.GetComponent<DamageScript>() == null)
                 return;
             if (target.CompareTag("Enemy"))
                 target.GetComponent<DamageScript>().damage(damage);
 
+
+
+        } else {
+
+            TracerEffect.ShowTracerEffect(cam.position + direction.direction, direction.direction, 100);
         }
 
     }
