@@ -12,22 +12,21 @@ public class GunnerScript : MonoBehaviour {
     Vector3 relPos = Vector3.zero;
     Vector2 xbounds = new Vector2(-0.5f,0.5f);
     Vector2 zbounds = new Vector2(-0.7f,0.7f);
-    Transform cam;
+    public Transform cam;
 
     public float speed = 0.05f;
     public float sensitivity =  500000f;
 
 	// Use this for initialization
 	void Start () {
-        truck = GameObject.FindGameObjectWithTag("Driver").transform;
-        transform.SetParent(truck);
+        truck = transform.parent;
         transform.localPosition = offset;
-        cam = transform.GetChild(0);
+        cam = GetComponentInChildren<Camera>().transform;
         AssignGun(weapons[0]);
 	}
 
     void Update() {
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButton("Fire1"))
             shootyStick.Shoot();
 
         

@@ -13,7 +13,7 @@ public class Gatling : Gun {
         base.Start();
     }
 
-    public new void Shoot()
+    public override void Shoot()
     {
         base.Shoot();
         for (int i = 0; i < 8; i++)

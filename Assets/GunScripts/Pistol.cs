@@ -14,7 +14,7 @@ public class Pistol : Gun{
         base.Start(); 
     }
 
-    public new void Shoot() {
+    public override void Shoot() {
         base.Shoot();
         for (int i = 0; i < 3; i++) {
             SingleShot(new Ray(transform.position, transform.forward));

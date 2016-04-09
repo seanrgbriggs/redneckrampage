@@ -26,7 +26,7 @@ public abstract class Gun : MonoBehaviour {
         curDelay = Mathf.Max(0, curDelay - Time.deltaTime);
     }
 
-    public void Shoot() {
+    public virtual void Shoot() {
         if (ammo <= 0) {
             Reload();
             return;
@@ -34,15 +34,20 @@ public abstract class Gun : MonoBehaviour {
         if (curDelay > 0)
             return;
         ammo--;
+        curDelay = delay;
     }
 
     protected void SingleShot(Ray direction)
     {
-        direction.direction = Quaternion.Euler(Random.Range(-spreadAngle, spreadAngle), Random.Range(-spreadAngle, spreadAngle), 0) * direction.direction;
+        direction.direction = Quaternion.Euler(Random.Range(-spreadAngle, spreadAngle), Random.Range(-spreadAngle, spreadAngle), 0) * gunner.GetComponent<GunnerScript>().cam.forward;
         RaycastHit info = new RaycastHit();
         if (Physics.Raycast(direction, out info, range))
         {
             GameObject target = info.transform.gameObject;
+
+            print(target.name+Random.seed);
+            //Instantiate(GameObject.CreatePrimitive(PrimitiveType.Capsule), info.point, Quaternion.identity);
+
             if (target.GetComponent<DamageScript>()==null)
                 return;
             float rangemult = 1 - Mathf.Pow(((info.distance) / range),2);
