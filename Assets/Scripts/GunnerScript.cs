@@ -17,6 +17,9 @@ public class GunnerScript : MonoBehaviour {
     public float speed = 0.05f;
     public float sensitivity =  500000f;
 
+
+    public Texture2D Crosshair;
+
     // Use this for initialization
     void Start () {
         truck = transform.parent;
@@ -52,6 +55,10 @@ public class GunnerScript : MonoBehaviour {
         shootyStick.transform.SetParent(cam);
         Vector3 gunOffset = Vector3.down * 0.3f +Vector3.right * .25f;
         shootyStick.transform.localPosition=(gunOffset);
+
+    }
+
+    void OnGUI() {
 
     }
 }

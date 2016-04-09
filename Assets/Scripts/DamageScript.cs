@@ -26,7 +26,6 @@ public class DamageScript : MonoBehaviour {
 
 	public void damage(float dmg){
 		health -= dmg;
-        print(health);
 	}
 
 	void Die() {
