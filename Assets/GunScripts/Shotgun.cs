@@ -6,7 +6,7 @@ public class Shotgun : Gun{
 
     public override void Start()
     {
-        damage = 3;
+        damage = 10;
 
         delay = 2;
         range = 400;
