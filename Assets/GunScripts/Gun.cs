@@ -7,13 +7,13 @@ public abstract class Gun : MonoBehaviour {
 
     public GameObject gunner;
 
-    public float delay;
-    public float curDelay;
+    protected float delay;
+    protected float curDelay;
 
-    public float damage;
-    public float range;
+    protected float damage;
+    protected float range;
 
-    public float spreadAngle;
+    protected float spreadAngle;
     
     public EffectImpact ImpactEffect;
     public EffectMuzzleFlash MuzzleEffect;
@@ -68,4 +68,7 @@ public abstract class Gun : MonoBehaviour {
 
     }
 
+    public float getDelay() {
+        return curDelay;
+    }
 }
