@@ -4,7 +4,7 @@ using System.Collections;
 public class Shotgun : Gun{
 
 
-    public new void Start()
+    public override void Start()
     {
         clipSize = 1;
         damage = 3;
@@ -17,7 +17,7 @@ public class Shotgun : Gun{
         base.Start(); 
     }
 
-    public new void Shoot() {
+    public override void Shoot() {
         base.Shoot();
         for (int i = 0; i < 25; i++) {
             SingleShot(new Ray(transform.position, transform.forward));

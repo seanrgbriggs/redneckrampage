@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.Vehicles.Car;
 
 public class DamageScript : MonoBehaviour {
 
@@ -10,6 +11,7 @@ public class DamageScript : MonoBehaviour {
 	void Start () {
 		if (health <= 0)
 			health = 1;
+        GetComponent<CarAIControl>().SetTarget(GameObject.FindGameObjectWithTag("Driver").transform);
 	}
 	
 	// Update is called once per frame
@@ -24,6 +26,7 @@ public class DamageScript : MonoBehaviour {
 
 	public void damage(float dmg){
 		health -= dmg;
+        print(health);
 	}
 
 	void Die() {
@@ -32,7 +35,7 @@ public class DamageScript : MonoBehaviour {
 	}
 
     void OnCollisionEnter(Collision col) {
-        if (col.gameObject.tag == "Player") {
+        if (col.gameObject.tag == "Driver") {
             Die();
         }
     }

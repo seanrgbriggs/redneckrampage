@@ -4,7 +4,7 @@ using System.Collections;
 public class Gatling : Gun {
 
     // Use this for initialization
-    public new void Start () {
+    public override void Start () {
         clipSize = 50;
         damage = 3;
         delay = 0.1f;
@@ -13,7 +13,7 @@ public class Gatling : Gun {
         base.Start();
     }
 
-    public new void Shoot()
+    public override void Shoot()
     {
         base.Shoot();
         for (int i = 0; i < 8; i++)
