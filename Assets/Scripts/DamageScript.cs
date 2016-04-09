@@ -4,6 +4,7 @@ using System.Collections;
 public class DamageScript : MonoBehaviour {
 
 	public float health;
+    public GameObject Explosion;
 
 	// Use this for initialization
 	void Start () {
@@ -25,7 +26,14 @@ public class DamageScript : MonoBehaviour {
 		health -= dmg;
 	}
 
-	void Die(){
-		Destroy (this.gameObject);
+	void Die() {
+        Instantiate(Explosion, transform.position, Quaternion.identity);
+        Destroy (this.gameObject);
 	}
+
+    void OnCollisionEnter(Collision col) {
+        if (col.gameObject.tag == "Player") {
+            Die();
+        }
+    }
 }
