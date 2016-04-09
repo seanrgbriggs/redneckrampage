@@ -27,7 +27,7 @@ public abstract class Gun : MonoBehaviour {
         curDelay = 0;
     }
 
-    public void Update() {
+    public virtual void Update() {
         curDelay = Mathf.Max(0, curDelay - Time.deltaTime);
         CasingEffect.enableEmission = Input.GetButton("Fire1");
     }

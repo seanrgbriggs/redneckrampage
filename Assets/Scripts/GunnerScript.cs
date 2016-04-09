@@ -3,7 +3,6 @@ using System.Collections;
 
 public class GunnerScript : MonoBehaviour {
 
-    Transform truck;
     public Gun[] weapons;
     Gun shootyStick;
 
@@ -22,7 +21,6 @@ public class GunnerScript : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        truck = transform.parent;
         transform.localPosition = offset;
         cam = GetComponentInChildren<Camera>().transform;
         AssignGun(weapons[0]);
