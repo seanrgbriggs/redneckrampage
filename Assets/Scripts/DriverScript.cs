@@ -19,6 +19,7 @@ public class DriverScript : MonoBehaviour {
         nitrous = 100f;
 
         rb = GetComponent<Rigidbody>();
+        
     }
 
     // Update is called once per frame
