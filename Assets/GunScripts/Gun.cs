@@ -54,8 +54,10 @@ public abstract class Gun : MonoBehaviour {
 
             if (target.GetComponent<DamageScript>() == null)
                 return;
-            if (target.CompareTag("Enemy"))
+            if (target.CompareTag("Enemy")) {
+                GetComponentInParent<GunnerScript>().ShowHitTime = delay * 0.8f;
                 target.GetComponent<DamageScript>().damage(damage);
+            }
 
 
 

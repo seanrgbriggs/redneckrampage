@@ -15,9 +15,10 @@ public class GunnerScript : MonoBehaviour {
 
     public float speed = 0.05f;
     public float sensitivity =  500000f;
-
+    public float ShowHitTime;
 
     public Texture2D Crosshair;
+    public Texture2D Hit;
 
     // Use this for initialization
     void Start () {
@@ -30,7 +31,7 @@ public class GunnerScript : MonoBehaviour {
         if (Input.GetButton("Fire1"))
             shootyStick.Shoot();
 
-        
+        ShowHitTime -= Time.deltaTime;
 
         transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X") * sensitivity, 0));   
         cam.Rotate(new Vector3(Input.GetAxis("Mouse Y") * sensitivity,0, 0));
@@ -57,6 +58,13 @@ public class GunnerScript : MonoBehaviour {
     }
 
     void OnGUI() {
+        Camera cam = GetComponentInChildren<Camera>();
+        Vector3 center = cam.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
 
+        GUI.DrawTexture(new Rect(center - new Vector3(128, 128), new Vector2(256, 256)), Crosshair);
+
+        if (ShowHitTime > 0) {
+            GUI.DrawTexture(new Rect(center - new Vector3(64, 64), new Vector2(128, 128)), Hit);
+        }
     }
 }
