@@ -9,6 +9,8 @@ public class DriverScript : MonoBehaviour {
 
     Rigidbody rb;
     const float fuelUse = 0.001f;
+    const float nitrousUse = 5f;
+    const float boostSpeed = 20f;
 
     // Use this for initialization
     void Start () {
@@ -18,13 +20,16 @@ public class DriverScript : MonoBehaviour {
 
         rb = GetComponent<Rigidbody>();
     }
-	
-	// Update is called once per frame
-	void Update () {
-        DrivingLogic.enabled = fuel > 0;
-        fuel = Mathf.Clamp(fuel-Mathf.Abs(rb.velocity.magnitude*fuelUse), 0, 100);
 
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+    // Update is called once per frame
+    void Update() {
+        DrivingLogic.enabled = fuel > 0;
+        fuel = Mathf.Clamp(fuel - Mathf.Abs(rb.velocity.magnitude * Time.deltaTime * fuelUse), 0, 100);
+
+        if (Input.GetButton("Boost")) {
+            nitrous -= Time.deltaTime* nitrousUse;
+            rb.AddForce(transform.forward*boostSpeed);
+        }
 	}
 
     void OnCollisionEnter(Collision col) {
