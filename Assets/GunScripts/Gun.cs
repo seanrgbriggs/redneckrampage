@@ -16,10 +16,13 @@ public abstract class Gun : MonoBehaviour {
 
     public float spreadAngle;
 
+    AudioSource[] sounds;
+
     public virtual void Start(){
         gunner = GameObject.FindGameObjectWithTag("Gunner");
         ammo = clipSize;
         curDelay = 0;
+        sounds = GetComponents<AudioSource>();
     }
 
     public void Update() {
@@ -35,6 +38,7 @@ public abstract class Gun : MonoBehaviour {
             return;
         ammo--;
         curDelay = delay;
+        if (sounds[0] != null) sounds[0].Play();
     }
 
     protected void SingleShot(Ray direction)
