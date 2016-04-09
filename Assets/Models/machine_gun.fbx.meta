@@ -18,6 +18,7 @@ ModelImporter:
     2300000: Cube
     3300000: Cube
     4300000: Cube
+    6400000: Cube
   materials:
     importMaterials: 1
     materialName: 0
@@ -44,7 +45,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 0.01
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0

@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Gatling : Gun {
+public class Gatling : Gun
+{
 
     // Use this for initialization
-    public override void Start () {
-        clipSize = 50;
+    public override void Start()
+    {
         damage = 3;
         delay = 0.1f;
         range = 700;
@@ -21,4 +22,5 @@ public class Gatling : Gun {
             SingleShot(new Ray(transform.position, transform.forward));
         }
     }
+
 }

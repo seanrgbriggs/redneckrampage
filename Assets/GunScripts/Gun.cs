@@ -7,9 +7,6 @@ public abstract class Gun : MonoBehaviour {
 
     public GameObject gunner;
 
-    public int clipSize;
-    public int ammo;
-
     public float delay;
     public float curDelay;
 
@@ -21,27 +18,23 @@ public abstract class Gun : MonoBehaviour {
     public EffectImpact ImpactEffect;
     public EffectMuzzleFlash MuzzleEffect;
     public EffectTracer TracerEffect;
+    public ParticleSystem CasingEffect;
 
     public AudioClip[] sounds;
 
     public virtual void Start(){
         gunner = GameObject.FindGameObjectWithTag("Gunner");
-        ammo = clipSize;
         curDelay = 0;
     }
 
     public void Update() {
         curDelay = Mathf.Max(0, curDelay - Time.deltaTime);
+        CasingEffect.enableEmission = Input.GetButton("Fire1");
     }
 
     public virtual void Shoot() {
-        if (ammo <= 0) {
-            Reload();
-            return;
-        }
         if (curDelay > 0)
             return;
-        ammo--;
         curDelay = delay;
         if (sounds.Length > 0) AudioSource.PlayClipAtPoint(sounds[0], transform.position);
     }
@@ -73,9 +66,4 @@ public abstract class Gun : MonoBehaviour {
 
     }
 
-
-    public void Reload()
-    {
-        ammo = clipSize;
-    }
 }

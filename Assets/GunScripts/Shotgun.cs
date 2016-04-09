@@ -6,7 +6,6 @@ public class Shotgun : Gun{
 
     public override void Start()
     {
-        clipSize = 1;
         damage = 3;
 
         delay = 2;

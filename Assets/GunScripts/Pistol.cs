@@ -6,7 +6,6 @@ public class Pistol : Gun{
 
     public override void Start()
     {
-        clipSize = 2;
         damage = 5;
         delay = 1;
         range = 500;
