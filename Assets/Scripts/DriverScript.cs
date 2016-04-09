@@ -8,13 +8,18 @@ public class DriverScript : MonoBehaviour {
     public float nitrous;
 
     Rigidbody rb;
-    const float fuelUse = 0.001f;
+    const float fuelUse = 0.05f;
     const float nitrousUse = 5f;
     const float boostSpeed = 20f;
 
     public Texture2D MeterBase;
     public Texture2D FuelMeter;
     public Texture2D BeerMeter;
+    public Texture2D LabelBeer;
+    public Texture2D LabelFuel;
+    public GUISkin Skin;
+
+    public int Flags;
 
     // Use this for initialization
     void Start () {
@@ -23,7 +28,6 @@ public class DriverScript : MonoBehaviour {
         nitrous = 100f;
 
         rb = GetComponent<Rigidbody>();
-        print(rb.centerOfMass);
         //rb.centerOfMass = new Vector3(0, 0, 0);
     }
 
@@ -60,8 +64,14 @@ public class DriverScript : MonoBehaviour {
     void OnGUI() {
         GUI.DrawTexture(new Rect(50, 50, 128, 32), MeterBase);
         GUI.DrawTexture(new Rect(50, 50, 128f * fuel / 100f, 32), FuelMeter);
+        GUI.DrawTexture(new Rect(50, 50, 128, 32), LabelFuel);
         GUI.DrawTexture(new Rect(50, 100, 128, 32), MeterBase);
         GUI.DrawTexture(new Rect(50, 100, 128f * nitrous / 100f, 32), BeerMeter);
+        GUI.DrawTexture(new Rect(50, 100, 128, 32), LabelBeer);
+
+        GUI.skin = Skin;
+        GUI.color = Color.black;
+        GUI.Label(new Rect(50, 150, 128, 32), "Flags: " + Flags);
     }
 
 }

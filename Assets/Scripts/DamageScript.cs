@@ -48,7 +48,7 @@ public class DamageScript : MonoBehaviour {
 
     void OnCollisionEnter(Collision col) {
         if (col.gameObject.tag == "Driver") {
-            Die();
+            damage(50);
         }
     }
 }
