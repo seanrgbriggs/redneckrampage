@@ -6,12 +6,13 @@ public class DamageScript : MonoBehaviour {
 
 	public float health;
     public GameObject Explosion;
-
+    public AudioClip deathCry;
 	// Use this for initialization
 	void Start () {
 		if (health <= 0)
 			health = 1;
-        GetComponent<CarAIControl>().SetTarget(GameObject.FindGameObjectWithTag("Driver").transform);
+        if(GetComponent<CarAIControl>() != null)
+            GetComponent<CarAIControl>().SetTarget(GameObject.FindGameObjectWithTag("Driver").transform);
 	}
 	
 	// Update is called once per frame
@@ -30,6 +31,8 @@ public class DamageScript : MonoBehaviour {
 
 	void Die() {
         Instantiate(Explosion, transform.position, Quaternion.identity);
+        if (deathCry != null)
+            AudioSource.PlayClipAtPoint(deathCry, transform.position);
         Destroy (this.gameObject);
 	}
 
