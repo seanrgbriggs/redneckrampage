@@ -12,6 +12,10 @@ public class DriverScript : MonoBehaviour {
     const float nitrousUse = 5f;
     const float boostSpeed = 20f;
 
+    public Texture2D MeterBase;
+    public Texture2D FuelMeter;
+    public Texture2D BeerMeter;
+
     // Use this for initialization
     void Start () {
         DrivingLogic = GetComponent<UnityStandardAssets.Vehicles.Car.CarUserControl>();
@@ -19,7 +23,8 @@ public class DriverScript : MonoBehaviour {
         nitrous = 100f;
 
         rb = GetComponent<Rigidbody>();
-        
+        print(rb.centerOfMass);
+        //rb.centerOfMass = new Vector3(0, 0, 0);
     }
 
     // Update is called once per frame
@@ -27,8 +32,11 @@ public class DriverScript : MonoBehaviour {
         DrivingLogic.enabled = fuel > 0;
         fuel = Mathf.Clamp(fuel - Mathf.Abs(rb.velocity.magnitude * Time.deltaTime * fuelUse), 0, 100);
 
-        if (Input.GetButton("Boost")) {
+        if (Input.GetButton("Boost") && nitrous > 0) {
             nitrous -= Time.deltaTime* nitrousUse;
+            if (nitrous < 0) {
+                nitrous = 0;
+            }
             rb.AddForce(transform.forward*boostSpeed, ForceMode.Acceleration);
         }
 	}
@@ -47,6 +55,13 @@ public class DriverScript : MonoBehaviour {
                 fuel -= 2;
                 break;
         }
+    }
+
+    void OnGUI() {
+        GUI.DrawTexture(new Rect(50, 50, 128, 32), MeterBase);
+        GUI.DrawTexture(new Rect(50, 50, 128f * fuel / 100f, 32), FuelMeter);
+        GUI.DrawTexture(new Rect(50, 100, 128, 32), MeterBase);
+        GUI.DrawTexture(new Rect(50, 100, 128f * nitrous / 100f, 32), BeerMeter);
     }
 
 }
