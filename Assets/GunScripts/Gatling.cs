@@ -16,6 +16,9 @@ public class Gatling : Gun
 
     public override void Shoot()
     {
+        if (curDelay > 0)
+            return;
+        curDelay = delay;
         base.Shoot();
         for (int i = 0; i < 8; i++)
         {

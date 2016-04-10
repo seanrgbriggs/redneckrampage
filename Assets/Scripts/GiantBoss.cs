@@ -40,11 +40,17 @@ public class GiantBoss : MonoBehaviour {
             Tofu.SetPosition(0, RightBarrel.transform.position);
 
             RaycastHit hit;
-            if (Physics.Raycast(RightBarrel.position, -Guns.up, out hit)) {
+            if (Physics.Raycast(Guns.position, -Guns.up, out hit)) {
+
+                DriverScript driver = hit.collider.GetComponent<DriverScript>();
+                if (driver != null) {
+                    driver.fuel -= 10 * Time.deltaTime;
+                }
+
                 Tofu.SetPosition(1, hit.point);
                 Tofu.material.mainTextureScale = new Vector2(hit.distance / 3, 1);
             } else {
-                Tofu.SetPosition(1, RightBarrel.position - Guns.up * 200);
+                Tofu.SetPosition(1, Guns.position - Guns.up * 200);
                 Tofu.material.mainTextureScale = new Vector2(70, -1);
             }
             

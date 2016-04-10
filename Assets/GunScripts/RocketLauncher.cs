@@ -23,6 +23,9 @@ public class RocketLauncher : Gun{
     public override void Shoot() {
         if (clip <= 0)
         {
+            if (curDelay > 0)
+                return;
+            curDelay = delay;
             base.Shoot();
             clip = 3;
         }
