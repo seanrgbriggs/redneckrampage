@@ -13,7 +13,7 @@ public class RocketLauncher : Gun{
     public override void Start()
     {
         damage = 50;
-        delay = 5;
+        delay = 7.5f;
         range = 500;
         spreadAngle = 15;
 
@@ -50,7 +50,6 @@ public class RocketLauncher : Gun{
     }
 
     public override void HudGUI() {
-        print(curDelay);
         if (curDelay <= 0) {
             float x = Screen.width / 2 + 50;
             for (int i = 0; i < clip; i++) {

@@ -22,12 +22,20 @@ public class GunnerScript : MonoBehaviour
     public Texture2D Crosshair;
     public Texture2D Hit;
 
+    //private float pitch;
+    private float yaw;
+
+    private bool track = true;
+
     // Use this for initialization
     void Start()
     {
         transform.localPosition = offset;
         cam = GetComponentInChildren<Camera>().transform;
         AssignGun(weapons[curWeap]);
+
+        yaw = transform.eulerAngles.y;
+        //pitch = cam.eulerAngles.x;
     }
 
     void Update()
@@ -37,15 +45,36 @@ public class GunnerScript : MonoBehaviour
 
         ShowHitTime -= Time.deltaTime;
 
+        if (track) {
+            transform.eulerAngles = new Vector3(0, yaw, 0);
+            Vector3 l = transform.localEulerAngles;
+            l.x = 0;
+            l.z = 0;
+            transform.localEulerAngles = l;
+        }
+
+        //cam.eulerAngles = new Vector3(pitch, 0, 0);
+        //l = cam.localEulerAngles;
+        //l.y = 0;
+        //l.z = 0;
+        //cam.localEulerAngles = l;
+
         transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X") * sensitivity, 0));
         cam.Rotate(new Vector3(Input.GetAxis("Mouse Y") * sensitivity, 0, 0));
+        
+        yaw = transform.eulerAngles.y;
+        //pitch = cam.eulerAngles.x;
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) {
+        if (Input.GetAxis("Mouse ScrollWheel") > 0) {
             Destroy(shootyStick.gameObject);
             AssignGun(weapons[0]);
-        } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+        } else if (Input.GetAxis("Mouse ScrollWheel") < 0) {
             Destroy(shootyStick.gameObject);
             AssignGun(weapons[1]);
+        }
+
+        if (Input.GetMouseButtonDown(1)) {
+            track = !track;
         }
     }
     void FixedUpdate()

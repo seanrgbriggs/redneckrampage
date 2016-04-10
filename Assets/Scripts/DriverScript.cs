@@ -22,6 +22,9 @@ public class DriverScript : MonoBehaviour {
     public Texture2D Divider;
     public GUISkin Skin;
 
+    public Texture2D Win;
+    public Texture2D Lose;
+
     public int Flags;
     public GameObject HouseBoom;
     public GameObject Boss;
@@ -31,8 +34,11 @@ public class DriverScript : MonoBehaviour {
 
     private ParticleSystem Exhaust;
 
+    public GameObject Explosion;
+
     // Use this for initialization
     void Start () {
+        Cursor.lockState = CursorLockMode.Locked;
         DrivingLogic = GetComponent<UnityStandardAssets.Vehicles.Car.CarUserControl>();
         fuel = 100f;
         nitrous = 100f;
@@ -55,13 +61,13 @@ public class DriverScript : MonoBehaviour {
             rb.AddForce(transform.forward*boostSpeed, ForceMode.Acceleration);
         }
 
-        if (Flags >= 2 && !bossSpawned) {
+        if (Flags >= 3 && !bossSpawned) {
             foreach (GameObject obj in GameObject.FindGameObjectsWithTag("House")) {
                 Instantiate(HouseBoom, obj.transform.position, Quaternion.identity);
                 Destroy(obj);
             }
 
-            bossInst = ((GameObject)Instantiate(Instantiate(Boss, new Vector3(250, 250, 250), Quaternion.Euler(270, 0, 0)))).GetComponent<GiantBoss>() ;
+            bossInst = ((GameObject)Instantiate(Boss, new Vector3(250, 250, 250), Quaternion.Euler(270, 0, 0))).GetComponent<GiantBoss>() ;
             bossSpawned = true;
         }
 
@@ -79,10 +85,22 @@ public class DriverScript : MonoBehaviour {
             Exhaust.enableEmission = false;
         }
 
+
         c = Vector3.MoveTowards(c, t, Time.deltaTime * 10);
 
         Camera.main.transform.localPosition = c;
         Camera.main.transform.localEulerAngles = a;
+
+        if (Input.GetKeyDown(KeyCode.Backspace)) {
+            Time.timeScale = 1.0f;
+            Application.LoadLevel(Application.loadedLevel);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && nitrous >= 20) {
+            Instantiate(Explosion, transform.position + Vector3.down, Quaternion.identity);
+            rb.AddExplosionForce(20, transform.position + Vector3.down, 5, 1, ForceMode.VelocityChange);
+            nitrous -= 20;
+        }
 	}
 
     void OnCollisionEnter(Collision col) {
@@ -102,22 +120,35 @@ public class DriverScript : MonoBehaviour {
     }
 
     void OnGUI() {
-        GUI.DrawTexture(new Rect(50, 50, 128, 32), MeterBase);
-        GUI.DrawTexture(new Rect(50, 50, 128f * fuel / 100f, 32), FuelMeter);
-        GUI.DrawTexture(new Rect(50, 50, 128, 32), LabelFuel);
-        GUI.DrawTexture(new Rect(50, 100, 128, 32), MeterBase);
-        GUI.DrawTexture(new Rect(50, 100, 128f * nitrous / 100f, 32), BeerMeter);
-        GUI.DrawTexture(new Rect(50, 100, 128, 32), LabelBeer);
+        
 
-        GUI.DrawTexture(new Rect(Screen.width / 2 - 8, 0, 16, Screen.height), Divider);
 
-        if (bossSpawned) {
-            GUI.DrawTexture(new Rect(Screen.width / 2 - 256, 50, 512, 32), BossBar);
+        if (fuel <= 0) {
+
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Lose);
+            Time.timeScale = 0.0f;
+        } else if (bossSpawned && bossInst == null) {
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Win);
+            Time.timeScale = 0.0f;
+        } else {
+            GUI.DrawTexture(new Rect(50, 50, 128, 32), MeterBase);
+            GUI.DrawTexture(new Rect(50, 50, 128f * fuel / 100f, 32), FuelMeter);
+            GUI.DrawTexture(new Rect(50, 50, 128, 32), LabelFuel);
+            GUI.DrawTexture(new Rect(50, 100, 128, 32), MeterBase);
+            GUI.DrawTexture(new Rect(50, 100, 128f * nitrous / 100f, 32), BeerMeter);
+            GUI.DrawTexture(new Rect(50, 100, 128, 32), LabelBeer);
+
+            GUI.DrawTexture(new Rect(Screen.width / 2 - 8, 0, 16, Screen.height), Divider);
+
+            if (bossSpawned && bossInst != null) {
+                GUI.DrawTexture(new Rect(Screen.width / 2 - 256, 50, 512, 32), BossBar);
+                GUI.DrawTexture(new Rect(Screen.width / 2 - 256, 50, 512f * bossInst.GetComponent<DamageScript>().health / 8000, 32), BossBarFill);
+            }
+
+            GUI.skin = Skin;
+            GUI.color = Color.black;
+            GUI.Label(new Rect(50, 150, 128, 32), "Flags: " + Flags);
         }
-
-        GUI.skin = Skin;
-        GUI.color = Color.black;
-        GUI.Label(new Rect(50, 150, 128, 32), "Flags: " + Flags);
     }
 
 }

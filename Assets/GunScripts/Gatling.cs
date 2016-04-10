@@ -7,7 +7,7 @@ public class Gatling : Gun
     // Use this for initialization
     public override void Start()
     {
-        damage = 3;
+        damage = 5;
         delay = 0.1f;
         range = 700;
         spreadAngle = 11;
