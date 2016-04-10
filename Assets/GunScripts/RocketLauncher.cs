@@ -8,15 +8,17 @@ public class RocketLauncher : Gun{
     public int clip;
     public float subDelay;
 
+    public Texture2D AmmoImage;
+
     public override void Start()
     {
         damage = 50;
-        delay = 15;
+        delay = 5;
         range = 500;
         spreadAngle = 15;
 
         clip = 3;
-        subDelay = 0.5f;
+        subDelay = 0.2f;
         base.Start(); 
     }
 
@@ -26,14 +28,15 @@ public class RocketLauncher : Gun{
             if (curDelay > 0)
                 return;
             curDelay = delay;
-            base.Shoot();
             clip = 3;
         }
-        else {
-            if (subDelay == 0)
-            {
-                Instantiate(boomCapsule, transform.position + transform.forward, Quaternion.identity);
-                subDelay = 0.5f;
+        else if (curDelay == 0) {
+            if (subDelay == 0) {
+                base.Shoot();
+                GameObject shot = (GameObject)Instantiate(boomCapsule, transform.position + transform.forward, Quaternion.identity);
+                shot.transform.up = transform.forward;
+                shot.GetComponent<Rigidbody>().velocity = shot.transform.up * 60;
+                subDelay = 0.2f;
                 clip--;
             }
         }
@@ -44,5 +47,16 @@ public class RocketLauncher : Gun{
         base.Update();
         if (subDelay > 0)
             subDelay = Mathf.Max(subDelay - Time.deltaTime, 0);
+    }
+
+    public override void HudGUI() {
+        print(curDelay);
+        if (curDelay <= 0) {
+            float x = Screen.width / 2 + 50;
+            for (int i = 0; i < clip; i++) {
+                Vector3 pos = new Vector3(x + i * 50, 50);
+                GUI.DrawTexture(new Rect(pos, new Vector2(32, 64)), AmmoImage);
+            }
+        }
     }
 }

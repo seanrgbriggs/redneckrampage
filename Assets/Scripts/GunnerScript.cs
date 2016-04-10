@@ -39,6 +39,14 @@ public class GunnerScript : MonoBehaviour
 
         transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X") * sensitivity, 0));
         cam.Rotate(new Vector3(Input.GetAxis("Mouse Y") * sensitivity, 0, 0));
+
+        if (Input.GetKeyDown(KeyCode.Alpha1)) {
+            Destroy(shootyStick.gameObject);
+            AssignGun(weapons[0]);
+        } else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+            Destroy(shootyStick.gameObject);
+            AssignGun(weapons[1]);
+        }
     }
     void FixedUpdate()
     {
@@ -59,6 +67,11 @@ public class GunnerScript : MonoBehaviour
         shootyStick.transform.SetParent(cam);
         Vector3 gunOffset = Vector3.down * 0.3f + Vector3.right * .25f;
         shootyStick.transform.localPosition = (gunOffset);
+        if (g is RocketLauncher) {
+            shootyStick.transform.localEulerAngles = Vector3.zero;
+        } else {
+            shootyStick.transform.localEulerAngles = new Vector3(0, 180, 0);
+        }
 
     }
 
@@ -69,9 +82,10 @@ public class GunnerScript : MonoBehaviour
 
         GUI.DrawTexture(new Rect(center - new Vector3(128, 128), new Vector2(256, 256)), Crosshair);
 
-        if (ShowHitTime > 0)
-        {
+        if (ShowHitTime > 0) {
             GUI.DrawTexture(new Rect(center - new Vector3(64, 64), new Vector2(128, 128)), Hit);
         }
+
+        shootyStick.HudGUI();
     }
 }

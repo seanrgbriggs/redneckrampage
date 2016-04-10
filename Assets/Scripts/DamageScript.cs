@@ -7,6 +7,7 @@ public class DamageScript : MonoBehaviour {
 	public float health;
     public GameObject Explosion;
     public AudioClip deathCry;
+    public GameObject Can;
 	// Use this for initialization
 	void Start () {
 		if (health <= 0)
@@ -30,6 +31,9 @@ public class DamageScript : MonoBehaviour {
 	}
 
 	void Die() {
+        if (Can != null) {
+            Instantiate(Can, transform.position, Quaternion.identity);
+        }
         Instantiate(Explosion, transform.position, Quaternion.identity);
         if (deathCry != null)
         {

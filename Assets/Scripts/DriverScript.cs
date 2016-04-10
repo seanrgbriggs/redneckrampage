@@ -17,9 +17,19 @@ public class DriverScript : MonoBehaviour {
     public Texture2D BeerMeter;
     public Texture2D LabelBeer;
     public Texture2D LabelFuel;
+    public Texture2D BossBar;
+    public Texture2D BossBarFill;
+    public Texture2D Divider;
     public GUISkin Skin;
 
     public int Flags;
+    public GameObject HouseBoom;
+    public GameObject Boss;
+    private bool bossSpawned;
+
+    private GiantBoss bossInst;
+
+    private ParticleSystem Exhaust;
 
     // Use this for initialization
     void Start () {
@@ -28,6 +38,7 @@ public class DriverScript : MonoBehaviour {
         nitrous = 100f;
 
         rb = GetComponent<Rigidbody>();
+        Exhaust = transform.FindChild("Exhaust").GetComponent<ParticleSystem>();
         //rb.centerOfMass = new Vector3(0, 0, 0);
     }
 
@@ -43,6 +54,35 @@ public class DriverScript : MonoBehaviour {
             }
             rb.AddForce(transform.forward*boostSpeed, ForceMode.Acceleration);
         }
+
+        if (Flags >= 2 && !bossSpawned) {
+            foreach (GameObject obj in GameObject.FindGameObjectsWithTag("House")) {
+                Instantiate(HouseBoom, obj.transform.position, Quaternion.identity);
+                Destroy(obj);
+            }
+
+            bossInst = ((GameObject)Instantiate(Instantiate(Boss, new Vector3(250, 250, 250), Quaternion.Euler(270, 0, 0)))).GetComponent<GiantBoss>() ;
+            bossSpawned = true;
+        }
+
+        Vector3 c = Camera.main.transform.localPosition;
+        Vector3 a = Camera.main.transform.localEulerAngles;
+        c.x = -Input.GetAxis("Horizontal") * 1;
+        a.y = Input.GetAxis("Horizontal") * 20;
+
+        Vector3 t = c;
+        if (Input.GetButton("Boost") && nitrous > 0) {
+            t.z = -7;
+            Exhaust.enableEmission = true;
+        } else {
+            t.z = -5;
+            Exhaust.enableEmission = false;
+        }
+
+        c = Vector3.MoveTowards(c, t, Time.deltaTime * 10);
+
+        Camera.main.transform.localPosition = c;
+        Camera.main.transform.localEulerAngles = a;
 	}
 
     void OnCollisionEnter(Collision col) {
@@ -68,6 +108,12 @@ public class DriverScript : MonoBehaviour {
         GUI.DrawTexture(new Rect(50, 100, 128, 32), MeterBase);
         GUI.DrawTexture(new Rect(50, 100, 128f * nitrous / 100f, 32), BeerMeter);
         GUI.DrawTexture(new Rect(50, 100, 128, 32), LabelBeer);
+
+        GUI.DrawTexture(new Rect(Screen.width / 2 - 8, 0, 16, Screen.height), Divider);
+
+        if (bossSpawned) {
+            GUI.DrawTexture(new Rect(Screen.width / 2 - 256, 50, 512, 32), BossBar);
+        }
 
         GUI.skin = Skin;
         GUI.color = Color.black;
