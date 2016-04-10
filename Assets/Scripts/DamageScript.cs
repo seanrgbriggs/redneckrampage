@@ -4,51 +4,67 @@ using UnityStandardAssets.Vehicles.Car;
 
 public class DamageScript : MonoBehaviour {
 
-	public float health;
+    public float health;
     public GameObject Explosion;
     public AudioClip deathCry;
     public GameObject Can;
-	// Use this for initialization
-	void Start () {
-		if (health <= 0)
-			health = 1;
-        if(GetComponent<CarAIControl>() != null)
+    public bool DestroyObject = false;
+    private bool Exploded = false;
+    // Use this for initialization
+    void Start() {
+        if (health <= 0)
+            health = 1;
+        if (GetComponent<CarAIControl>() != null)
             GetComponent<CarAIControl>().SetTarget(GameObject.FindGameObjectWithTag("Driver").transform);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		checkLiving ();
-	}
+    }
 
-	void checkLiving(){
-		if (health <= 0)
-			Die ();
-	}
+    // Update is called once per frame
+    void Update() {
+        checkLiving();
+    }
 
-	public void damage(float dmg){
-		health -= dmg;
-	}
+    void checkLiving() {
+        if (health <= 0)
+            Die();
+    }
 
-	void Die() {
-        if (Can != null) {
-            Instantiate(Can, transform.position, Quaternion.identity);
+    public void damage(float dmg) {
+        health -= dmg;
+        if (health < 0) {
+            health = 0;
         }
-        Instantiate(Explosion, transform.position, Quaternion.identity);
-        if (deathCry != null)
-        {
-            AudioSource.PlayClipAtPoint(deathCry, transform.position);
-            /*AudioSource deathKnell = gameObject.AddComponent<AudioSource>();
-            deathKnell.clip = deathCry;
-            deathKnell.pitch = Random.Range(2,7);
-            deathKnell.volume = 50;
-            deathKnell.Play();
-            Destroy(deathKnell);
-            print("MEMES");*/
-        }
+    }
 
-        Destroy (this.gameObject);
-	}
+    void Die() {
+        if (!Exploded) {
+            Exploded = true;
+            if (Can != null) {
+                Instantiate(Can, transform.position, Quaternion.identity);
+            }
+            Instantiate(Explosion, transform.position, Quaternion.identity);
+            if (deathCry != null) {
+                AudioSource.PlayClipAtPoint(deathCry, transform.position);
+                /*AudioSource deathKnell = gameObject.AddComponent<AudioSource>();
+                deathKnell.clip = deathCry;
+                deathKnell.pitch = Random.Range(2,7);
+                deathKnell.volume = 50;
+                deathKnell.Play();
+                Destroy(deathKnell);
+                print("MEMES");*/
+            }
+
+            if (DestroyObject) {
+                Destroy(this.gameObject);
+            } else {
+                GetComponent<GiantBoss>().enabled = false;
+                Rigidbody rb = GetComponent<Rigidbody>();
+                if (rb != null) {
+                    rb.freezeRotation = false;
+                    //rb.AddTorque(new Vector3(1000, 1000, 1000), ForceMode.VelocityChange);
+                }
+            }
+        }
+    }
 
     void OnCollisionEnter(Collision col) {
         if (col.gameObject.tag == "Driver") {

@@ -29,6 +29,7 @@ public class DriverScript : MonoBehaviour {
     public GameObject HouseBoom;
     public GameObject Boss;
     private bool bossSpawned;
+    private bool gameOver;
 
     private GiantBoss bossInst;
 
@@ -45,62 +46,83 @@ public class DriverScript : MonoBehaviour {
 
         rb = GetComponent<Rigidbody>();
         Exhaust = transform.FindChild("Exhaust").GetComponent<ParticleSystem>();
-        //rb.centerOfMass = new Vector3(0, 0, 0);
+        rb.centerOfMass += Vector3.down * 10;
     }
 
     // Update is called once per frame
     void Update() {
-        DrivingLogic.enabled = fuel > 0;
-        fuel = Mathf.Clamp(fuel - Mathf.Abs(rb.velocity.magnitude * Time.deltaTime * fuelUse), 0, 100);
+        if (!bossSpawned || bossInst.GetComponent<DamageScript>().health > 0) {
+            DrivingLogic.enabled = fuel > 0;
+            fuel = Mathf.Clamp(fuel - Mathf.Abs(rb.velocity.magnitude * Time.deltaTime * fuelUse), 0, 100);
 
-        if (Input.GetButton("Boost") && nitrous > 0) {
-            nitrous -= Time.deltaTime* nitrousUse;
-            if (nitrous < 0) {
-                nitrous = 0;
-            }
-            rb.AddForce(transform.forward*boostSpeed, ForceMode.Acceleration);
-        }
-
-        if (Flags >= 3 && !bossSpawned) {
-            foreach (GameObject obj in GameObject.FindGameObjectsWithTag("House")) {
-                Instantiate(HouseBoom, obj.transform.position, Quaternion.identity);
-                Destroy(obj);
+            if (Input.GetButton("Boost") && nitrous > 0) {
+                nitrous -= Time.deltaTime * nitrousUse;
+                if (nitrous < 0) {
+                    nitrous = 0;
+                }
+                rb.AddForce(transform.forward * boostSpeed, ForceMode.Acceleration);
             }
 
-            bossInst = ((GameObject)Instantiate(Boss, new Vector3(250, 250, 250), Quaternion.Euler(270, 0, 0))).GetComponent<GiantBoss>() ;
-            bossSpawned = true;
+            if (Flags >= 3 && !bossSpawned) {
+                foreach (GameObject obj in GameObject.FindGameObjectsWithTag("House")) {
+                    Instantiate(HouseBoom, obj.transform.position, Quaternion.identity);
+                    Destroy(obj);
+                }
+
+                bossInst = ((GameObject)Instantiate(Boss, new Vector3(250, 250, 250), Quaternion.Euler(270, 0, 0))).GetComponent<GiantBoss>();
+                bossSpawned = true;
+            }
+
+            Vector3 c = Camera.main.transform.localPosition;
+            Vector3 a = Camera.main.transform.localEulerAngles;
+            c.x = -Input.GetAxis("Horizontal") * 1;
+            a.y = Input.GetAxis("Horizontal") * 20;
+
+            Vector3 t = c;
+            if (Input.GetButton("Boost") && nitrous > 0) {
+                t.z = -7;
+                Exhaust.enableEmission = true;
+            } else {
+                t.z = -5;
+                Exhaust.enableEmission = false;
+            }
+
+
+            c = Vector3.MoveTowards(c, t, Time.deltaTime * 10);
+
+            Camera.main.transform.localPosition = c;
+            Camera.main.transform.localEulerAngles = a;
+
+            if (Input.GetKeyDown(KeyCode.Space) && nitrous >= 20) {
+                Instantiate(Explosion, transform.position + Vector3.down, Quaternion.identity);
+                rb.AddExplosionForce(20, transform.position + Vector3.down, 5, 1, ForceMode.VelocityChange);
+                nitrous -= 20;
+            }
         }
 
-        Vector3 c = Camera.main.transform.localPosition;
-        Vector3 a = Camera.main.transform.localEulerAngles;
-        c.x = -Input.GetAxis("Horizontal") * 1;
-        a.y = Input.GetAxis("Horizontal") * 20;
-
-        Vector3 t = c;
-        if (Input.GetButton("Boost") && nitrous > 0) {
-            t.z = -7;
-            Exhaust.enableEmission = true;
-        } else {
-            t.z = -5;
-            Exhaust.enableEmission = false;
-        }
-
-
-        c = Vector3.MoveTowards(c, t, Time.deltaTime * 10);
-
-        Camera.main.transform.localPosition = c;
-        Camera.main.transform.localEulerAngles = a;
 
         if (Input.GetKeyDown(KeyCode.Backspace)) {
-            Time.timeScale = 1.0f;
             Application.LoadLevel(Application.loadedLevel);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && nitrous >= 20) {
-            Instantiate(Explosion, transform.position + Vector3.down, Quaternion.identity);
-            rb.AddExplosionForce(20, transform.position + Vector3.down, 5, 1, ForceMode.VelocityChange);
-            nitrous -= 20;
+        if (bossSpawned && bossInst.GetComponent<DamageScript>().health <= 3) {
+            GameObject obj = GameObject.FindGameObjectWithTag("EndGameCamera");
+            if (obj != null && obj.name == "EndGameCamera") {
+                obj.GetComponent<Camera>().enabled = true;
+                obj.name = "Camera";
+                obj.GetComponent<AudioListener>().enabled = true;
+                transform.FindChild("Gunner").gameObject.SetActive(false);
+                Camera.main.enabled = false;
+                obj.tag = "MainCamera";
+                Invoke("WinGame", 5.0f);
+            }
         }
+
+        //if (transform.up.y < 0) {
+        //    Vector3 u = transform.up;
+        //    u.y = 0;
+        //    transform.up = Vector3.RotateTowards(transform.up, u, Time.deltaTime, 0);
+        //}
 	}
 
     void OnCollisionEnter(Collision col) {
@@ -119,17 +141,17 @@ public class DriverScript : MonoBehaviour {
         }
     }
 
+    void WinGame() {
+        gameOver = true;
+    }
+
     void OnGUI() {
-        
-
-
-        if (fuel <= 0) {
-
-            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Lose);
-            Time.timeScale = 0.0f;
-        } else if (bossSpawned && bossInst == null) {
+        if (gameOver) {
             GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Win);
-            Time.timeScale = 0.0f;
+        } else if (bossSpawned && bossInst.GetComponent<DamageScript>().health <= 0) {
+            return;
+        } else if (fuel <= 0) {
+            GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), Lose);
         } else {
             GUI.DrawTexture(new Rect(50, 50, 128, 32), MeterBase);
             GUI.DrawTexture(new Rect(50, 50, 128f * fuel / 100f, 32), FuelMeter);

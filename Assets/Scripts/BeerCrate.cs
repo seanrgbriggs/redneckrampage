@@ -16,7 +16,8 @@ public class BeerCrate : MonoBehaviour {
     void OnCollisionEnter(Collision col) {
         DriverScript driver = col.collider.GetComponentInParent<DriverScript>();
         if (driver != null) {
-            driver.nitrous = 100;
+            driver.nitrous = Mathf.Clamp(driver.nitrous + 50, 0, 100);
+            driver.fuel = Mathf.Clamp(driver.fuel + 10, 0, 100);
             Destroy(gameObject);
         }
     }

@@ -21,9 +21,8 @@ public class GunnerScript : MonoBehaviour
 
     public Texture2D Crosshair;
     public Texture2D Hit;
-
-    //private float pitch;
-    private float yaw;
+    
+    private Vector3 forward;
 
     private bool track = true;
 
@@ -34,8 +33,7 @@ public class GunnerScript : MonoBehaviour
         cam = GetComponentInChildren<Camera>().transform;
         AssignGun(weapons[curWeap]);
 
-        yaw = transform.eulerAngles.y;
-        //pitch = cam.eulerAngles.x;
+        forward = transform.forward;
     }
 
     void Update()
@@ -46,31 +44,28 @@ public class GunnerScript : MonoBehaviour
         ShowHitTime -= Time.deltaTime;
 
         if (track) {
-            transform.eulerAngles = new Vector3(0, yaw, 0);
+            transform.forward = forward;
             Vector3 l = transform.localEulerAngles;
             l.x = 0;
             l.z = 0;
             transform.localEulerAngles = l;
         }
-
-        //cam.eulerAngles = new Vector3(pitch, 0, 0);
-        //l = cam.localEulerAngles;
-        //l.y = 0;
-        //l.z = 0;
-        //cam.localEulerAngles = l;
-
+        
         transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X") * sensitivity, 0));
         cam.Rotate(new Vector3(Input.GetAxis("Mouse Y") * sensitivity, 0, 0));
-        
-        yaw = transform.eulerAngles.y;
-        //pitch = cam.eulerAngles.x;
+
+        forward = transform.forward;
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0) {
-            Destroy(shootyStick.gameObject);
-            AssignGun(weapons[0]);
+            if (curWeap < weapons.Length - 1) {
+                curWeap++;
+                AssignGun(weapons[curWeap]);
+            }
         } else if (Input.GetAxis("Mouse ScrollWheel") < 0) {
-            Destroy(shootyStick.gameObject);
-            AssignGun(weapons[1]);
+            if (curWeap > 0) {
+                curWeap--;
+                AssignGun(weapons[curWeap]);
+            }
         }
 
         if (Input.GetMouseButtonDown(1)) {
@@ -92,7 +87,7 @@ public class GunnerScript : MonoBehaviour
 
     public void AssignGun(Gun g)
     {
-        shootyStick = Instantiate(g);
+        /*shootyStick = Instantiate(g);
         shootyStick.transform.SetParent(cam);
         Vector3 gunOffset = Vector3.down * 0.3f + Vector3.right * .25f;
         shootyStick.transform.localPosition = (gunOffset);
@@ -100,7 +95,14 @@ public class GunnerScript : MonoBehaviour
             shootyStick.transform.localEulerAngles = Vector3.zero;
         } else {
             shootyStick.transform.localEulerAngles = new Vector3(0, 180, 0);
+        }*/
+
+        
+        if (shootyStick != null) {
+            shootyStick.gameObject.SetActive(false);
         }
+        g.gameObject.SetActive(true);
+        shootyStick = g;
 
     }
 

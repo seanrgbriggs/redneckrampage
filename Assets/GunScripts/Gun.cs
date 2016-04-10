@@ -37,9 +37,14 @@ public abstract class Gun : MonoBehaviour
         }
     }
 
-    public virtual void Shoot()
-    {
-        if (sounds.Length > 0) AudioSource.PlayClipAtPoint(sounds[0], transform.position);
+    public virtual void Shoot() {
+        Transform cam = gunner.GetComponentInChildren<Camera>().transform.FindChild("GunBarrell");
+        if (cam != null && MuzzleEffect != null) {
+            MuzzleEffect.ShowMuzzleEffect(cam, true, null);
+        }
+        if (sounds.Length > 0) {
+            AudioSource.PlayClipAtPoint(sounds[0], transform.position);
+        }
     }
 
     protected void SingleShot(Ray direction)
@@ -47,12 +52,11 @@ public abstract class Gun : MonoBehaviour
         Transform cam = gunner.GetComponentInChildren<Camera>().transform.FindChild("GunBarrell");
         direction.direction = Quaternion.Euler(Random.Range(-spreadAngle, spreadAngle), Random.Range(-spreadAngle, spreadAngle), 0) * cam.forward;
         RaycastHit info = new RaycastHit();
-        MuzzleEffect.ShowMuzzleEffect(cam, true, null);
         if (Physics.Raycast(direction, out info, range))
         {
             GameObject target = info.transform.gameObject;
 
-            TracerEffect.ShowTracerEffect(cam.position + direction.direction, direction.direction, info.distance);
+            //TracerEffect.ShowTracerEffect(cam.position + direction.direction, direction.direction, info.distance);
 
             ImpactEffect.ShowImpactEffect(info.point, info.normal);
 

@@ -11,7 +11,7 @@ public class OilCan : MonoBehaviour {
     void OnCollisionEnter(Collision col) {
         DriverScript driver = col.collider.GetComponentInParent<DriverScript>();
         if (driver != null) {
-            driver.fuel += 10;
+            driver.fuel += 5;
             driver.fuel = Mathf.Clamp(driver.fuel + 10, 0, 100);
             Destroy(gameObject);
         }

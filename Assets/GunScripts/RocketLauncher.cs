@@ -13,7 +13,7 @@ public class RocketLauncher : Gun{
     public override void Start()
     {
         damage = 50;
-        delay = 7.5f;
+        delay = 6.5f;
         range = 500;
         spreadAngle = 15;
 
@@ -51,9 +51,9 @@ public class RocketLauncher : Gun{
 
     public override void HudGUI() {
         if (curDelay <= 0) {
-            float x = Screen.width / 2 + 50;
+            float x = Screen.width - 80;
             for (int i = 0; i < clip; i++) {
-                Vector3 pos = new Vector3(x + i * 50, 50);
+                Vector3 pos = new Vector3(x - i * 50, 50);
                 GUI.DrawTexture(new Rect(pos, new Vector2(32, 64)), AmmoImage);
             }
         }

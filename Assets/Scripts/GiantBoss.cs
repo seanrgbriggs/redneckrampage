@@ -44,7 +44,7 @@ public class GiantBoss : MonoBehaviour {
 
                 DriverScript driver = hit.collider.GetComponent<DriverScript>();
                 if (driver != null) {
-                    driver.fuel -= 10 * Time.deltaTime;
+                    driver.fuel -= 8 * Time.deltaTime;
                 }
 
                 Tofu.SetPosition(1, hit.point);
