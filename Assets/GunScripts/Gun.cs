@@ -38,7 +38,7 @@ public abstract class Gun : MonoBehaviour
     }
 
     public virtual void Shoot() {
-        Transform cam = gunner.GetComponentInChildren<Camera>().transform.FindChild("GunBarrell");
+        Transform cam = gunner.transform.FindChild("GunBarrell");
         if (cam != null && MuzzleEffect != null) {
             MuzzleEffect.ShowMuzzleEffect(cam, true, null);
         }
@@ -49,7 +49,7 @@ public abstract class Gun : MonoBehaviour
 
     protected void SingleShot(Ray direction)
     {
-        Transform cam = gunner.GetComponentInChildren<Camera>().transform.FindChild("GunBarrell");
+        Transform cam = gunner.transform.FindChild("GunBarrell");
         direction.direction = Quaternion.Euler(Random.Range(-spreadAngle, spreadAngle), Random.Range(-spreadAngle, spreadAngle), 0) * cam.forward;
         RaycastHit info = new RaycastHit();
         if (Physics.Raycast(direction, out info, range))

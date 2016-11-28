@@ -13,8 +13,7 @@ public class GunnerScript : MonoBehaviour
     Vector3 relPos = Vector3.zero;
     Vector2 xbounds = new Vector2(-0.5f, 0.5f);
     Vector2 zbounds = new Vector2(-0.7f, 0.7f);
-    public Transform cam;
-
+ 
     public float speed = 0.05f;
     public float sensitivity = 500000f;
     public float ShowHitTime;
@@ -30,8 +29,7 @@ public class GunnerScript : MonoBehaviour
     void Start()
     {
         transform.localPosition = offset;
-        cam = GetComponentInChildren<Camera>().transform;
-        AssignGun(weapons[curWeap]);
+         AssignGun(weapons[curWeap]);
 
         forward = transform.forward;
     }
@@ -51,9 +49,7 @@ public class GunnerScript : MonoBehaviour
             transform.localEulerAngles = l;
         }
         
-        transform.Rotate(new Vector3(0, Input.GetAxis("Mouse X") * sensitivity, 0));
-        cam.Rotate(new Vector3(Input.GetAxis("Mouse Y") * sensitivity, 0, 0));
-
+  
         forward = transform.forward;
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0) {
@@ -106,17 +102,4 @@ public class GunnerScript : MonoBehaviour
 
     }
 
-    void OnGUI()
-    {
-        Camera cam = GetComponentInChildren<Camera>();
-        Vector3 center = cam.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
-
-        GUI.DrawTexture(new Rect(center - new Vector3(128, 128), new Vector2(256, 256)), Crosshair);
-
-        if (ShowHitTime > 0) {
-            GUI.DrawTexture(new Rect(center - new Vector3(64, 64), new Vector2(128, 128)), Hit);
-        }
-
-        shootyStick.HudGUI();
-    }
 }
